@@ -1,4 +1,4 @@
-import json
+import json, re
 from os.path import exists
 from utils import *
 
@@ -25,38 +25,54 @@ def main():
             if cont.lower() == 'y':
                 # verifies mobile num
                 mobile_num = input("Mobile Phone Number: ")
+
+                mobile_pattern = R'^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$'
+                mobile_matched = re.search(mobile_pattern, mobile_num)
+
                 while True:
-                    for char in mobile_num:
-                        if not char.isdigit() or len(mobile_num) != 10: 
-                            mobile_num = input("\nInvalid entry!\nMobile Phone Number: ")
-                            break
-                    else:
+                    if mobile_num == "":
+                        mobile_num = None
                         break
-                if mobile_num == "":
-                    mobile_num = None
+
+                    if not mobile_matched:
+                        mobile_num = input("\nInvalid entry!\nMobile Phone Number: ")
+                        mobile_matched = re.search(mobile_pattern, mobile_num)
+                    else: break    
+                
 
                 # verifies home num    
                 home_num = input("Home Phone Number: ")
-                while True:
-                    for char in home_num:
-                        if not char.isdigit() or len(home_num) != 10: 
-                            home_num = input("\nInvalid entry!\nHome Phone Number: ")
-                            break
-                    else:
-                        break
-                if home_num == "":
-                    home_num = None
 
+                homeNum_pattern = R'^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$'
+                homeNum_matched = re.search(homeNum_pattern, home_num)
+
+                while True:
+                    if home_num == "":
+                        home_num = None
+                        break
+
+                    if not homeNum_matched:
+                        home_num = input("\nInvalid entry!\nHome Phone Number: ")
+                        homeNum_matched = re.search(homeNum_pattern, home_num)
+                    else: break
+
+                
                 # verifies email
                 email = input("E-mail address: ")
+
+                email_pattern = R'^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
+                email_matched = re.search(email_pattern, email)
+
                 while True:
-                    
-                    if '@' not in email:
+                    if email == '':
+                        email = None
+                        break
+
+                    if not email_matched:
                         email = input("\nInvalid entry!\nE-mail address: ")
-                    else: 
-                        check = email.split('@')[1]
-                        if '.' in check: break
-                        else: email = input("\nInvalid entry!\nE-mail address: ")
+                        email_matched = re.search(email_pattern, email)
+                    else: break
+
 
                 # verifies address
                 address = input("Address: ")
@@ -105,7 +121,7 @@ if __name__ == '__main__':
                             'last_name':'Doe', 
                             'mobile_num':'1234567890', 
                             'home_num':'1234567890', 
-                            'email':'doe@gmail.com', 
+                            'email':'Doe@python.io', 
                             'address':'123 Apple Rd'}]}
 
         with open("contacts_list.json", "w") as file:
